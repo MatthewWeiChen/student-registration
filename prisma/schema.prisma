@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  hashedPassword String
+  role           Role     @default(STUDENT)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  student        Student?
+}
+
+model Student {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName      String
+  middleName     String?
+  lastName       String
+  secondLastName String?
+  dateOfBirth    DateTime
+  gender         String
+  address        String?
+  city           String
+  state          String
+  zipCode        String?
+  country        String
+  phoneNumber    String
+  email          String?
+  guide          String
+  guideId        String
+  guideDept      String
+  guideChurch    String
+  guideTribe     String
+  teacher        String?
+  teacherId      String?
+  teacherDept    String?
+  teacherChurch  String?
+  teacherTribe   String?
+  leaf           String?
+  leafId         String?
+  leafDept       String?
+  leafChurch     String?
+  leafTribe      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  Class          Class?   @relation(fields: [classId], references: [id])
+  classId        String?
+}
+
+model Class {
+  id          String    @id @default(cuid())
+  teacher     String
+  timeOfClass DateTime
+  createdAt   DateTime  @default(now())
+  updateAt    DateTime  @updatedAt
+  students    Student[]
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}
